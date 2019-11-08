@@ -53,13 +53,13 @@ public class LineCutFeedback : MonoBehaviour
     {
         List<Vector3> points = new List<Vector3>();
         Vector3 endPosition = GetMousePosition();
-        float step = (endPosition - startPosition).magnitude / 20;
-        points.Add(startPosition);
-        for (int i = 1; i < 20; i++)
+        Vector3 step = (endPosition - startPosition) / 19;
+        Vector3 path = startPosition;
+        for (int i = 0; i < 20; i++)
         {
-            points.Add(startPosition + (endPosition - startPosition) * i * step);
+            points.Add(path);
+            path += step;
         }
-        points.Add(endPosition);
 
         lineRenderer.SetPositions(points.ToArray());
     }
