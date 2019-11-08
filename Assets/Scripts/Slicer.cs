@@ -26,19 +26,19 @@ public class Slicer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Touch input = Input.GetTouch(0);
+        //Touch input = Input.GetTouch(0);
 
-        if (input.phase.Equals(TouchPhase.Began))
-        {
-            Debug.Log("Init");
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 500f, 9))
-            {
-                cutPlanePos = hit.point;
-                cutPlane.position = hit.point;
-            }
-        }
+        //if (input.phase.Equals(TouchPhase.Began))
+        //{
+        //    Debug.Log("Init");
+        //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //    RaycastHit hit;
+        //    if (Physics.Raycast(ray, out hit, 500f, 9))
+        //    {
+        //        cutPlanePos = hit.point;
+        //        cutPlane.position = hit.point;
+        //    }
+        //}
 
 
         if (Input.GetMouseButtonDown(0))
