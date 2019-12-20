@@ -1,0 +1,15 @@
+{
+    "Name" : "Test",
+    "Steps" : 
+    [
+      {
+        "Name": "Cuisson",
+        "Times": [ 5, 10, 15, 25 ],
+        "Ingredients": [ "tomate", "oignons" ],
+        "Type": [ "add", "fire2", "mix", "add" ]
+      },
+        {
+            "Name" : "Coupe"
+        }
+    ]
+}
