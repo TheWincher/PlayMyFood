@@ -8,8 +8,8 @@
         "Ingredients": [ "tomate", "oignons" ],
         "Type": [ "add", "fire2", "mix", "add" ]
       },
-        {
-            "Name" : "Coupe"
-        }
+      {
+          "Name" : "Coupe"
+      }
     ]
 }

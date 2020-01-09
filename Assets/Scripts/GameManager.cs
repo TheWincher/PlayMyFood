@@ -13,7 +13,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        recipe = Recipe.CreateFromJSON(Application.dataPath + "/Recipe/test.json");
+        DontDestroyOnLoad(gameObject);
+        recipe = Parser.CreateRecipeFromJSON(Application.dataPath + "/Recipe/test.json");
     }
 
     // Update is called once per frame

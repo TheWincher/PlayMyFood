@@ -8,7 +8,7 @@ public class TimeLine : MonoBehaviour
     // Start is called before the first frame update
     float sizeOfOneSec, time;
     int indIngredient = 0;
-    Step step;
+    StepCuisson step;
     Text textInfo;
     GameManager gameManager;
     List<GameObject> timeObjects;
@@ -18,10 +18,9 @@ public class TimeLine : MonoBehaviour
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        step = gameManager.Recipe.Steps[gameManager.StepCurrent];
+        step = (StepCuisson) gameManager.Recipe.Steps[gameManager.StepCurrent];
 
         textInfo = GameObject.Find("Text_recette").GetComponent<Text>();
-        Debug.Log(textInfo.text);
 
         sizeOfOneSec = GetComponent<RectTransform>().sizeDelta.x / 10f;
         timesCopy = new List<float>(step.Times);
@@ -57,7 +56,7 @@ public class TimeLine : MonoBehaviour
                 textInfo.text = GetInfoText(i);
                 break;
             }
-            if (step.Type[i] == "add")
+            if (step.Types[i] == "add")
                 indIngredient++;
         }
 
@@ -68,13 +67,13 @@ public class TimeLine : MonoBehaviour
     string GetInfoText(int i)
     {
         string res = "";
-        if (step.Type[i].Contains("fire"))
+        if (step.Types[i].Contains("fire"))
         {
-            res = "Régler le feux sur " + step.Type[i][step.Type[i].Length - 1];
+            res = "Régler le feux sur " + step.Types[i][step.Types[i].Length - 1];
         }
         else 
         {
-            switch(step.Type[i])
+            switch(step.Types[i])
             {
                 case "add" :
                     res = "ajouter la/le/les " + step.Ingredients[indIngredient];
