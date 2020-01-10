@@ -17,4 +17,14 @@ public class Legume
         nomLegume = name;
         coupes = new List<Coupe>(c);
     }
+
+    public string NomLegume
+    {
+        get { return nomLegume;}
+    }
+
+    public List<Coupe> Coupes
+    {
+        get { return coupes;}
+    }
 }
