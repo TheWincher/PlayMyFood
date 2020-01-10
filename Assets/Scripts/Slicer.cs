@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using EzySlice;
 using DG.Tweening;
+using Assets.Scripts;
 
 public class Slicer : MonoBehaviour
 {
@@ -13,32 +14,34 @@ public class Slicer : MonoBehaviour
 
     public GameObject sphere;
 
+    public LineRenderer lrDecoupe;
+    public LineRenderer lrRea;
+
     Vector3 cutPlanePos;
     Vector3 cutPlaneDirection;
 
     private Vector3 previousMousePos;
+
+    [SerializeField]
+    public List<Coupe> coupesPrevu;
+    public List<Coupe> coupesRea;
+
+    private List<Legume> legumes;
+    int indexLegume = 0;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        //on récupére les légumes a couper
+
+        lrDecoupe.positionCount = 2;
+        lrDecoupe.SetPosition(0, coupesPrevu[0].debut);
+        lrDecoupe.SetPosition(1, coupesPrevu[0].fin);
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Touch input = Input.GetTouch(0);
-
-        //if (input.phase.Equals(TouchPhase.Began))
-        //{
-        //    Debug.Log("Init");
-        //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //    RaycastHit hit;
-        //    if (Physics.Raycast(ray, out hit, 500f, 9))
-        //    {
-        //        cutPlanePos = hit.point;
-        //        cutPlane.position = hit.point;
-        //    }
-        //}
 
 
         if (Input.GetMouseButtonDown(0))
@@ -51,7 +54,6 @@ public class Slicer : MonoBehaviour
                 cutPlanePos = hit.point;
                 cutPlane.position = hit.point;
             }
-            //cutPlane.position = new Vector3(world_pos.x, world_pos.y, world_pos.z);
         }
         else if (Input.GetMouseButtonUp(0))
         {
@@ -68,8 +70,6 @@ public class Slicer : MonoBehaviour
             {
                 cutPlaneDirection = hit.point;
 
-                //Instantiate<GameObject>(sphere, hit.point,Quaternion.identity);
-
                 float angle = Vector3.Angle(cutPlaneDirection - cutPlanePos, Vector3.right);
 
                 if(cutPlaneDirection.z > cutPlanePos.z)
@@ -77,7 +77,7 @@ public class Slicer : MonoBehaviour
                     angle = -angle;
                 }
 
-                Debug.Log(angle);
+                //Debug.Log(angle);
                 cutPlane.eulerAngles = new Vector3(-90, angle, 0);
             }
 
@@ -90,7 +90,10 @@ public class Slicer : MonoBehaviour
     public void Slice()
     {
         Collider[] hits = Physics.OverlapBox(cutPlane.GetChild(0).position,cutPlane.localScale, cutPlane.rotation, layerMask);
+
         Debug.Log("Slice");
+        Debug.Log(lrRea.name);
+        coupesRea.Add(new Coupe(lrRea.GetPosition(0), lrRea.GetPosition(19)));
 
         if (hits.Length <= 0)
             return;
@@ -103,10 +106,27 @@ public class Slicer : MonoBehaviour
                 GameObject bottom = hull.CreateLowerHull(hits[i].gameObject, crossMaterial);
                 GameObject top = hull.CreateUpperHull(hits[i].gameObject, crossMaterial);
                 AddHullComponents(bottom,0);
-                AddHullComponents(top,200);
+                AddHullComponents(top,300);
+                top.layer = 0;
                 Destroy(hits[i].gameObject);
             }
         }
+
+        float diff = coupesRea[coupesRea.Count - 1].decalage(coupesPrevu[coupesRea.Count - 1]);
+        Debug.Log(diff);
+
+        //display new découpe
+        if (coupesRea.Count != coupesPrevu.Count)
+        {
+            lrDecoupe.SetPosition(0, coupesPrevu[coupesRea.Count].debut);
+            lrDecoupe.SetPosition(1, coupesPrevu[coupesRea.Count].fin);
+        }
+        else
+        {
+            Debug.Log("C est gg !!!");
+            lrDecoupe.positionCount = 0;
+        }
+        
     }
     public void AddHullComponents(GameObject go,float explosionForce)
     {
@@ -116,7 +136,7 @@ public class Slicer : MonoBehaviour
         MeshCollider collider = go.AddComponent<MeshCollider>();
         collider.convex = true;
 
-        rb.AddExplosionForce(explosionForce, go.transform.position, 20);
+        rb.AddExplosionForce(explosionForce, go.transform.position, 50);
     }
 
     public SlicedHull SliceObject(GameObject obj, Material crossSectionMaterial = null)
