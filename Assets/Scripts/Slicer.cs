@@ -21,21 +21,45 @@ public class Slicer : MonoBehaviour
 
     private Vector3 previousMousePos;
 
+    private Recipe recipe;
+    private List<Legume> legumes;
+    int indexLegume = 0;
+    private GameObject currentLegume;
+    private List<GameObject> hullComponents = new List<GameObject>();
+
     [SerializeField]
     public List<Coupe> coupesPrevu;
     public List<Coupe> coupesRea;
-
-    private List<Legume> legumes;
-    int indexLegume = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         //on récupére les légumes a couper
+        recipe = Parser.CreateRecipeFromJSON(Application.dataPath + "/Recipe/test.json");
+        StepCut stepCut = (StepCut)recipe.Steps[1];
+
+        //remplissages des coupes Prévus
+        legumes = stepCut.Legumes;
+        coupesPrevu = stepCut.Legumes[indexLegume].Coupes;
 
         lrDecoupe.positionCount = 2;
         lrDecoupe.SetPosition(0, coupesPrevu[0].debut);
         lrDecoupe.SetPosition(1, coupesPrevu[0].fin);
+
+        //instancier le bon prefab
+        switch (legumes[0].NomLegume)
+        {
+            case "Pain":
+                currentLegume = Resources.Load<GameObject>("bread_01");
+                break;
+            case "Carotte":
+                currentLegume = Resources.Load<GameObject>("bread_01");
+                break;
+            default:
+                Debug.LogError("Legume non trouvé");
+                break;
+        }
+        Instantiate(currentLegume);
     }
 
     // Update is called once per frame
@@ -108,6 +132,8 @@ public class Slicer : MonoBehaviour
                 AddHullComponents(top,300);
                 top.layer = 0;
                 Destroy(hits[i].gameObject);
+                hullComponents.Add(bottom);
+                hullComponents.Add(top);
             }
         }
 
@@ -122,8 +148,46 @@ public class Slicer : MonoBehaviour
         }
         else
         {
-            Debug.Log("C est gg !!!");
+           
             lrDecoupe.positionCount = 0;
+
+            indexLegume++;
+
+            if (indexLegume == legumes.Count)
+            {
+                Debug.Log("C est gg !!!");
+            }
+            else
+            {
+                //génération du légume suivant
+                for(int i = 0; i < hullComponents.Count; i++)
+                {
+                    Destroy(hullComponents[i]);
+                }
+                hullComponents.Clear();
+                coupesPrevu = legumes[indexLegume].Coupes;
+                coupesRea.Clear();
+
+                lrDecoupe.positionCount = 2;
+                lrDecoupe.SetPosition(0, coupesPrevu[0].debut);
+                lrDecoupe.SetPosition(1, coupesPrevu[0].fin);
+
+                //instancier le bon prefab
+                switch (legumes[0].NomLegume)
+                {
+                    case "Pain":
+                        currentLegume = Resources.Load<GameObject>("bread_01");
+                        break;
+                    case "Carotte":
+                        currentLegume = Resources.Load<GameObject>("bread_01");
+                        break;
+                    default:
+                        Debug.LogError("Legume non trouvé");
+                        break;
+                }
+                Instantiate(currentLegume);
+            }
+           
         }
         
     }

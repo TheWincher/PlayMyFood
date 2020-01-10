@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections;
 using UnityEngine;
 
+[Serializable]
 public class Coupe
 {
     [SerializeField]
