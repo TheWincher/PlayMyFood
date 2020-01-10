@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using EzySlice;
 using DG.Tweening;
-using Assets.Scripts;
 
 public class Slicer : MonoBehaviour
 {
