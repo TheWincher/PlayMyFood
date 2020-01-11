@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using EzySlice;
 using DG.Tweening;
+using TMPro;
 
 public class Slicer : MonoBehaviour
 {
@@ -15,6 +16,10 @@ public class Slicer : MonoBehaviour
 
     public LineRenderer lrDecoupe;
     public LineRenderer lrRea;
+
+    public TextMeshProUGUI sliceScore;
+    public TextMeshProUGUI sliceName;
+    private int score = 0;
 
     Vector3 cutPlanePos;
     Vector3 cutPlaneDirection;
@@ -59,6 +64,9 @@ public class Slicer : MonoBehaviour
                 Debug.LogError("Legume non trouvé");
                 break;
         }
+
+        sliceName.text = legumes[0].NomLegume;
+
         Instantiate(currentLegume);
     }
 
@@ -140,6 +148,9 @@ public class Slicer : MonoBehaviour
         float diff = coupesRea[coupesRea.Count - 1].decalage(coupesPrevu[coupesRea.Count - 1]);
         Debug.Log(diff);
 
+        score += CalculateScore(diff);
+        sliceScore.text = score.ToString();
+
         //display new découpe
         if (coupesRea.Count != coupesPrevu.Count)
         {
@@ -185,6 +196,9 @@ public class Slicer : MonoBehaviour
                         Debug.LogError("Legume non trouvé");
                         break;
                 }
+
+                sliceName.text = legumes[0].NomLegume;
+
                 Instantiate(currentLegume);
             }
            
@@ -215,6 +229,13 @@ public class Slicer : MonoBehaviour
     {
         
         cutPlane.eulerAngles += new Vector3(0, 0, 0);
+    }
+
+    public int CalculateScore(float dist)
+    {
+        if (dist < 0.1) return 100;
+        if (dist < 0.2) return 50;
+        return 0;
     }
 
 }
