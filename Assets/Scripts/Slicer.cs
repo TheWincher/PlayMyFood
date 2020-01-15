@@ -56,20 +56,31 @@ public class Slicer : MonoBehaviour
         //instancier le bon prefab
         switch (legumes[0].NomLegume)
         {
-            case "Pain":
-                currentLegume = Resources.Load<GameObject>("bread_01");
+            case "Aubergine":
+                currentLegume = Instantiate(Resources.Load<GameObject>("Eggplant"));
                 break;
-            case "Carotte":
-                currentLegume = Resources.Load<GameObject>("bread_01");
+
+            case "Tomate":
+                currentLegume = Instantiate(Resources.Load<GameObject>("Tomato"));
                 break;
+
+            case "Oignon":
+                currentLegume = Instantiate(Resources.Load<GameObject>("Onion"));
+                currentLegume.transform.position = new Vector3(0, 0, 0);
+                currentLegume.transform.localScale = new Vector3(30, 30, 30);
+                break;
+
+            case "Courgette":
+                currentLegume = Instantiate(Resources.Load<GameObject>("Cucumber"));
+                break;
+
             default:
                 Debug.LogError("Legume non trouvé");
+                Debug.Log(legumes[0].NomLegume);
                 break;
         }
 
         sliceName.text = legumes[0].NomLegume;
-
-        Instantiate(currentLegume);
     }
 
     // Update is called once per frame
@@ -133,7 +144,7 @@ public class Slicer : MonoBehaviour
                 GameObject bottom = hull.CreateLowerHull(hits[i].gameObject, crossMaterial);
                 GameObject top = hull.CreateUpperHull(hits[i].gameObject, crossMaterial);
                 AddHullComponents(bottom,0);
-                AddHullComponents(top,300);
+                AddHullComponents(top,200);
                 top.layer = 0;
                 Destroy(hits[i].gameObject);
                 hullComponents.Add(bottom);
@@ -142,7 +153,7 @@ public class Slicer : MonoBehaviour
         }
 
         float diff = coupesRea[coupesRea.Count - 1].decalage(coupesPrevu[coupesRea.Count - 1]);
-        Debug.Log(diff);
+        //Debug.Log(diff);
 
         score += CalculateScore(diff);
         sliceScore.text = score.ToString();
@@ -167,6 +178,7 @@ public class Slicer : MonoBehaviour
             else
             {
                 //génération du légume suivant
+                Destroy(currentLegume);
                 for(int i = 0; i < hullComponents.Count; i++)
                 {
                     Destroy(hullComponents[i]);
@@ -179,23 +191,37 @@ public class Slicer : MonoBehaviour
                 lrDecoupe.SetPosition(0, coupesPrevu[0].debut);
                 lrDecoupe.SetPosition(1, coupesPrevu[0].fin);
 
-                //instancier le bon prefab
-                switch (legumes[0].NomLegume)
+                
+
+                switch (legumes[indexLegume].NomLegume)
                 {
-                    case "Pain":
-                        currentLegume = Resources.Load<GameObject>("bread_01");
+                    case "Aubergine":
+                        currentLegume = Instantiate(Resources.Load<GameObject>("Eggplant"));
+                        currentLegume.transform.localRotation = Quaternion.Euler(45,0,0);
+                        currentLegume.transform.localPosition = new Vector3(-0.3f, 0, -1.0f);
+                        currentLegume.transform.localScale = new Vector3(20, 20, 20);
                         break;
-                    case "Carotte":
-                        currentLegume = Resources.Load<GameObject>("bread_01");
+
+                    case "Tomate":
+                        currentLegume = Instantiate(Resources.Load<GameObject>("Tomato"));
+                        currentLegume.transform.position = new Vector3(0, 0, 0);
+                        currentLegume.transform.localScale = new Vector3(20, 20, 20);
                         break;
+
+                    case "Oignon":
+                        currentLegume = Instantiate(Resources.Load<GameObject>("Onion"));
+                        break;
+
+                    case "Courgette":
+                        currentLegume = Instantiate(Resources.Load<GameObject>("Cucumber"));
+                        break;
+
                     default:
                         Debug.LogError("Legume non trouvé");
                         break;
                 }
 
-                sliceName.text = legumes[0].NomLegume;
-
-                Instantiate(currentLegume);
+                sliceName.text = legumes[indexLegume].NomLegume;
             }
            
         }
@@ -206,10 +232,12 @@ public class Slicer : MonoBehaviour
         go.layer = 9;
         Rigidbody rb = go.AddComponent<Rigidbody>();
         rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.useGravity = false;
+        rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
         MeshCollider collider = go.AddComponent<MeshCollider>();
         collider.convex = true;
 
-        rb.AddExplosionForce(explosionForce, go.transform.position, 50);
+        rb.AddExplosionForce(explosionForce, go.transform.position, explosionForce);
     }
 
     public SlicedHull SliceObject(GameObject obj, Material crossSectionMaterial = null)
