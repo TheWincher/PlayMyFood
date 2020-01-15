@@ -31,7 +31,7 @@ public class TimeLine : MonoBehaviour
     void Update()
     {
         time += Time.deltaTime;
-        transform.Find("Text").GetComponent<Text>().text = time.ToString();
+        //transform.Find("Text").GetComponent<Text>().text = time.ToString();
         foreach (float val in (float[]) timesCopy.ToArray().Clone())
         {
             if(val <= time +  10f)

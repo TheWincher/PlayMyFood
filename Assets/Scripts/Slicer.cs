@@ -32,6 +32,8 @@ public class Slicer : MonoBehaviour
     private GameObject currentLegume;
     private List<GameObject> hullComponents = new List<GameObject>();
 
+    GameManager gameManager;
+
     [SerializeField]
     public List<Coupe> coupesPrevu;
     public List<Coupe> coupesRea;
@@ -40,8 +42,8 @@ public class Slicer : MonoBehaviour
     void Start()
     {
         //on récupére les légumes a couper
-        recipe = Parser.CreateRecipeFromJSON(Application.dataPath + "/Recipe/test.json");
-        StepCut stepCut = (StepCut)recipe.Steps[1];
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        StepCut stepCut = (StepCut)gameManager.Recipe.Steps[gameManager.StepCurrent];
 
         //remplissages des coupes Prévus
         legumes = stepCut.Legumes;
@@ -73,11 +75,8 @@ public class Slicer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("Init");
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 500f, 9))
@@ -93,7 +92,6 @@ public class Slicer : MonoBehaviour
         else if (Input.GetMouseButton(0))
         {
             transform.rotation = Camera.main.transform.rotation;
-            Debug.Log("clic");
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -108,7 +106,6 @@ public class Slicer : MonoBehaviour
                     angle = -angle;
                 }
 
-                //Debug.Log(angle);
                 cutPlane.eulerAngles = new Vector3(-90, angle, 0);
             }
 
@@ -122,7 +119,6 @@ public class Slicer : MonoBehaviour
     {
         Collider[] hits = Physics.OverlapBox(cutPlane.GetChild(0).position,cutPlane.localScale, cutPlane.rotation, layerMask);
 
-        Debug.Log("Slice");
         Debug.Log(lrRea.name);
         coupesRea.Add(new Coupe(lrRea.GetPosition(0), lrRea.GetPosition(19)));
 
@@ -166,7 +162,7 @@ public class Slicer : MonoBehaviour
 
             if (indexLegume == legumes.Count)
             {
-                Debug.Log("C est gg !!!");
+                gameManager.nextStep();
             }
             else
             {
