@@ -74,7 +74,6 @@ public class Slicer : MonoBehaviour
 
             case "Oignon":
                 currentLegume = Instantiate(Resources.Load<GameObject>("Onion"));
-                currentLegume = Instantiate(Resources.Load<GameObject>("Onion"));
                 currentLegume.transform.position = new Vector3(0, 0, 0);
                 currentLegume.transform.localScale = new Vector3(30, 30, 30);
                 crossMaterial = Resources.Load<Material>("InOnion");
