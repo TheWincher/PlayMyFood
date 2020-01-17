@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
 
     public void setRecipe(string recipeName)
     {
-        recipe = Parser.CreateRecipeFromJSON(Application.dataPath + "/Recipe/" + recipeName + ".json");
+        recipe = Parser.CreateRecipeFromJSON("Recipe/"+recipeName);
         switch(recipe.Steps[0].Name)
         {
             case "Cuisson" :

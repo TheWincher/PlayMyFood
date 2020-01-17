@@ -10,7 +10,7 @@ public class scrollViewScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StringReader sr = new StringReader(File.ReadAllText(Application.dataPath + "/Recipe/RecipeBook"));
+        StringReader sr = new StringReader(Resources.Load<TextAsset>("Recipe/RecipeBook").text);
         string line = "";
 
         while((line = sr.ReadLine()) != null)

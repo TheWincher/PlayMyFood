@@ -1,6 +1,6 @@
-﻿using System.Collections;
+﻿using Newtonsoft.Json.Linq;
+using System.Collections;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 using System.IO;
 using UnityEngine;
 
@@ -8,7 +8,7 @@ public static class Parser
 {
     public static Recipe CreateRecipeFromJSON(string path)
     {
-        JObject encodeRecipe = JObject.Parse(File.ReadAllText(path));
+        JObject encodeRecipe = JObject.Parse(Resources.Load<TextAsset>(path).text);
         JArray encodeSteps = (JArray) encodeRecipe["Steps"];
         string nameRecipe = (string) encodeRecipe["Name"];
         List<Step> steps = new List<Step>();
