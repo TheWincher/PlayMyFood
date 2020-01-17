@@ -9,6 +9,8 @@ public class CuissonManager : MonoBehaviour
     StepCuisson step;
     Button buttonAdd;
     Slider sliderFeu;
+    MixStep fryingPan;
+    MoveSpoon spoon;
     float time = 0;
     int resAction = -1;
     // Start is called before the first frame update
@@ -23,6 +25,8 @@ public class CuissonManager : MonoBehaviour
         buttonAdd.onClick.AddListener(() => setAction(0));
 
         sliderFeu = GameObject.Find("Slider_feu").GetComponent<Slider>();
+        fryingPan = GameObject.Find("fryingPan").GetComponent<MixStep>();
+        spoon = GameObject.Find("woodenSpoon").GetComponent<MoveSpoon>();
     }
 
     // Update is called once per frame
@@ -58,6 +62,11 @@ public class CuissonManager : MonoBehaviour
                         }
                         else if(resAction != -1)
                             Debug.Log("Vous avez fait une erreur");
+                        break;
+                    case "mix":
+
+                        fryingPan.enabled = true;
+
                         break;
                 }
             }
