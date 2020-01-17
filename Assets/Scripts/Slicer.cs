@@ -58,25 +58,39 @@ public class Slicer : MonoBehaviour
         {
             case "Aubergine":
                 currentLegume = Instantiate(Resources.Load<GameObject>("Eggplant"));
+                currentLegume.transform.localRotation = Quaternion.Euler(45, 0, 0);
+                currentLegume.transform.localPosition = new Vector3(-0.3f, 0, -1.0f);
+                currentLegume.transform.localScale = new Vector3(20, 20, 20);
+                crossMaterial = Resources.Load<Material>("InEggplant");
                 break;
 
             case "Tomate":
                 currentLegume = Instantiate(Resources.Load<GameObject>("Tomato"));
+                currentLegume.transform.position = new Vector3(0, 0, 0);
+                currentLegume.transform.localScale = new Vector3(20, 20, 20);
+                crossMaterial = Resources.Load<Material>("InTomato");
+
                 break;
 
             case "Oignon":
                 currentLegume = Instantiate(Resources.Load<GameObject>("Onion"));
+                currentLegume = Instantiate(Resources.Load<GameObject>("Onion"));
                 currentLegume.transform.position = new Vector3(0, 0, 0);
                 currentLegume.transform.localScale = new Vector3(30, 30, 30);
+                crossMaterial = Resources.Load<Material>("InOnion");
+
                 break;
 
             case "Courgette":
                 currentLegume = Instantiate(Resources.Load<GameObject>("Cucumber"));
+                currentLegume.transform.localRotation = Quaternion.Euler(0, 90, 0);
+                currentLegume.transform.localPosition = new Vector3(-0.3f, 0, -0.4f);
+                currentLegume.transform.localScale = new Vector3(8, 8, 8);
+                crossMaterial = Resources.Load<Material>("InCucumber");
                 break;
 
             default:
                 Debug.LogError("Legume non trouvé");
-                Debug.Log(legumes[0].NomLegume);
                 break;
         }
 
@@ -143,8 +157,8 @@ public class Slicer : MonoBehaviour
             {
                 GameObject bottom = hull.CreateLowerHull(hits[i].gameObject, crossMaterial);
                 GameObject top = hull.CreateUpperHull(hits[i].gameObject, crossMaterial);
-                AddHullComponents(bottom,0);
-                AddHullComponents(top,200);
+                AddHullComponents(bottom,0,true);
+                AddHullComponents(top,5,false);
                 top.layer = 0;
                 Destroy(hits[i].gameObject);
                 hullComponents.Add(bottom);
@@ -200,20 +214,32 @@ public class Slicer : MonoBehaviour
                         currentLegume.transform.localRotation = Quaternion.Euler(45,0,0);
                         currentLegume.transform.localPosition = new Vector3(-0.3f, 0, -1.0f);
                         currentLegume.transform.localScale = new Vector3(20, 20, 20);
+                        crossMaterial = Resources.Load<Material>("InEggplant");
                         break;
 
                     case "Tomate":
                         currentLegume = Instantiate(Resources.Load<GameObject>("Tomato"));
                         currentLegume.transform.position = new Vector3(0, 0, 0);
                         currentLegume.transform.localScale = new Vector3(20, 20, 20);
+                        crossMaterial = Resources.Load<Material>("InTomato");
+
                         break;
 
                     case "Oignon":
                         currentLegume = Instantiate(Resources.Load<GameObject>("Onion"));
+                        currentLegume = Instantiate(Resources.Load<GameObject>("Onion"));
+                        currentLegume.transform.position = new Vector3(0, 0, 0);
+                        currentLegume.transform.localScale = new Vector3(30, 30, 30);
+                        crossMaterial = Resources.Load<Material>("InOnion");
+
                         break;
 
                     case "Courgette":
                         currentLegume = Instantiate(Resources.Load<GameObject>("Cucumber"));
+                        currentLegume.transform.localRotation = Quaternion.Euler(0, 90, 0);
+                        currentLegume.transform.localPosition = new Vector3(-0.3f, 0, -0.4f);
+                        currentLegume.transform.localScale = new Vector3(8, 8, 8);
+                        crossMaterial = Resources.Load<Material>("InCucumber");
                         break;
 
                     default:
@@ -227,17 +253,24 @@ public class Slicer : MonoBehaviour
         }
         
     }
-    public void AddHullComponents(GameObject go,float explosionForce)
+    public void AddHullComponents(GameObject go,float explosionForce, bool contraint)
     {
         go.layer = 9;
         Rigidbody rb = go.AddComponent<Rigidbody>();
         rb.interpolation = RigidbodyInterpolation.Interpolate;
-        rb.useGravity = false;
-        rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
+        
+        
         MeshCollider collider = go.AddComponent<MeshCollider>();
         collider.convex = true;
 
         rb.AddExplosionForce(explosionForce, go.transform.position, explosionForce);
+
+        if (contraint)
+        {
+            rb.useGravity = false;
+            rb.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
+
+        }
     }
 
     public SlicedHull SliceObject(GameObject obj, Material crossSectionMaterial = null)
